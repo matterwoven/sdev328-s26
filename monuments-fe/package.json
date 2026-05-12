@@ -1,0 +1,19 @@
+{
+  "name": "monuments-fe",
+  "version": "1.0.0",
+  "description": "Vanilla JS front end for the monuments api",
+  "license": "ISC",
+  "author": "Josh Archer",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
