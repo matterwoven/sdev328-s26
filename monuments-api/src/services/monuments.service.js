@@ -173,7 +173,7 @@ export const addMonument = mon => {
 
 export const updateMonument = updatedMon => {
     //how to find which monument this is?
-
+    const foundMon = data.find(el => name)
     //did I find the monument?
 
     //update the monument found...
