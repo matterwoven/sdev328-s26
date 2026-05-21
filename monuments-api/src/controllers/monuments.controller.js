@@ -19,3 +19,23 @@ export const addMon = (req, res) => {
         })
     }
 }
+
+export const updateMon = (req, res) => {
+    const mon = req.body;
+    if (mon) {
+        const result = updateMonument(mon);
+        if (result) {
+            res.status(200).json({
+                message: "Monument updated"
+            })
+        } else {
+            res.status(404).json({
+                message: "Monument not found"
+            })
+        }
+    } else {
+        res.status(400).json({
+            message: "Missing monument"
+        })
+    }
+}
