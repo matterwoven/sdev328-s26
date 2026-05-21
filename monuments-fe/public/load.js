@@ -9,6 +9,17 @@ form.onsubmit = handleSubmit;
 async function handleSubmit(event) {
     event.preventDefault();
 
+    const button = document.querySelector("button");
+    if (button.textContent === "Add") {
+        await fetchMonument("post");
+        //TODO add a new monument card
+    } else if (button.textContent === "Edit") {
+        await fetchMonument("put");
+        //TODO update the monument card you edited
+    }
+}
+
+async function fetchMonument(httpVerb) {
     //get our form values
     const name = document.querySelector("#name").value;
     const yearCompleted = document.querySelector("#yearCompleted").value;
@@ -23,11 +34,10 @@ async function handleSubmit(event) {
         heightFeet,
         theme
     }
-    console.log(formValues);
 
     const url = "http://localhost:8001/api/monuments";
     const config = {
-        method: "post",
+        method: httpVerb,
         headers: {
             "Content-Type": "application/json"
         },
@@ -35,7 +45,7 @@ async function handleSubmit(event) {
     }
     const response = await fetch(url, config);
     console.log(response);
-    console.log("Form submitted!");
+    console.log(`Form submitted (${httpVerb})!`);
 }
 
 async function handleSubmit(event) {
@@ -100,7 +110,6 @@ function showMonuments(mons) {
     for (let monument of mons) {
         addMonumentCard(monument, grid);
         // const { name, yearCompleted, type } = monument;
-
         // const monumentCard = `
         //     <div class="monument">
         //         <h2>${name}</h2>
@@ -109,16 +118,14 @@ function showMonuments(mons) {
         //         <p>Type: ${type}</p>
         //     </div>
         // `
-
-        // grid.innerHTML += monumentCard;
     }
 }
 
-function editMonumentHandler(monumnt, grid){
-    //create elements
+function addMonumentCard(monument, grid) {
+    //create our elements
     const { name, yearCompleted, type } = monument;
     const [div, h2, hr, pYear, pType, ulLinks, liEdit, liDelete, aEdit, aDelete] = 
-    createElements(["div", "h2", "hr", "p", "p", "ul", "li", "li", "a", "a"]);
+          createElements(["div", "h2", "hr", "p", "p", "ul", "li", "li", "a", "a"]);
 
     //configure them
     div.className = "monument";
@@ -127,80 +134,54 @@ function editMonumentHandler(monumnt, grid){
     pYear.textContent = `Year: ${yearCompleted}`;
     pType.textContent = `Type: ${type}`;
 
+    ulLinks.className = "links";
     aEdit.textContent = "Edit";
     aEdit.href = "#";
-    aEdit.textContent = "Delete"
-    aEdit.href = "#";
+    aDelete.textContent = "Delete";
+    aDelete.href = "#";
+    
     //connect our list of links
     liEdit.appendChild(aEdit);
     liDelete.appendChild(aDelete);
     appendAll(ulLinks, [liEdit, liDelete]);
 
-    liEdit.onclick = () => {
-        event.preventDefault();
+    liEdit.onclick = (event) => {
+        event.preventDefault(); //stop the link behavior
         editMonument(monument);
     }
+
     //add them to the dom
-    appendAll(div, [h2, hr, pYear, pType]);
+    appendAll(div, [h2, hr, pYear, pType, ulLinks]);
+
     grid.appendChild(div);
-
-}
-
-function addMonumentCard(monumnt, grid){
-    //create elements
-    const { name, yearCompleted, type } = monument;
-    const [div, h2, hr, pYear, pType, ulLinks, liEdit, liDelete, aEdit, aDelete] = 
-    createElements(["div", "h2", "hr", "p", "p", "ul", "li", "li", "a", "a"]);
-
-    //configure them
-    div.className = "monument";
-    h2.textContent = name;
-    pYear.className = "year";
-    pYear.textContent = `Year: ${yearCompleted}`;
-    pType.textContent = `Type: ${type}`;
-
-    aEdit.textContent = "Edit";
-    aEdit.href = "#";
-    aEdit.textContent = "Delete"
-    aEdit.href = "#";
-    //connect our list of links
-    liEdit.appendChild(aEdit);
-    liDelete.appendChild(aDelete);
-    appendAll(ulLinks, [liEdit, liDelete]);
-
-    liEdit.onclick = () => {
-        event.preventDefault();
-        editMonument(monument);
-    }
-    //add them to the dom
-    appendAll(div, [h2, hr, pYear, pType]);
-    grid.appendChild(div);
-
 }
 
 function editMonument(monument) {
     console.log(monument);
-    
+    const { name, yearCompleted, type } = monument;
+
     document.querySelector("#name").value = name;
     document.querySelector("#yearCompleted").value = yearCompleted;
     document.querySelector("#type").value = type;
-    document.querySelector("#heightFeet").value = heightFeet;
-    document.querySelector("#theme").value = theme;
+    document.querySelector("#heightFeet").value = "";
+    document.querySelector("#theme").value = "";
+
+    document.querySelector("button").textContent = "Edit";
 }
 
 function deleteMonument(monument) {
 
 }
 
-function appendAll(parent, children){
-    for (const child of children){
+function appendAll(parent, children) {
+    for (const child of children) {
         parent.appendChild(child);
     }
 }
 
-function createElements(tags){
+function createElements(tags) {
     const elems = [];
-    for (const tag of tags){
+    for (const tag of tags) {
         elems.push(document.createElement(tag));
     }
     return elems;
